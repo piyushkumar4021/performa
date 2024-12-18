@@ -1,4 +1,3 @@
-import Card from '@/components/card';
 import EmployeeData from '@/components/employee-data';
 import EmployeeList from '@/components/employee-list';
 import SearchForm from '@/components/search-form';

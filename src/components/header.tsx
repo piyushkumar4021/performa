@@ -27,24 +27,19 @@ export default function Header() {
 }
 
 const NavLinks = () => {
-  const path = usePathname();
+  const currPath = usePathname();
+  const getClassName = (path: string) =>
+    cn('px-3 py-1 sm:px-4 sm:py-2 rounded-md transition duration-300', {
+      'bg-white/25': path === currPath,
+    });
 
   return (
     <nav>
-      <ul className={'sm:space-x-3'}>
+      <ul className={'flex sm:gap-x-3'}>
         {routes.map((route) => (
-          <Link
-            href={route.path}
-            key={route.name}
-            className={cn(
-              'px-3 py-1 sm:px-4 sm:py-2 rounded-md transition duration-300',
-              {
-                'bg-white/25': route.path === path,
-              }
-            )}
-          >
-            {route.name}
-          </Link>
+          <li key={route.name} className={getClassName(route.path)}>
+            <Link href={route.path}>{route.name}</Link>
+          </li>
         ))}
       </ul>
     </nav>
