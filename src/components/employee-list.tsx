@@ -3,12 +3,20 @@ import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
 import Card from './card';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { useSearchContext } from '@/app/contexts/search-context-provider';
 
 export default function EmployeeList() {
-  const { employees, selectedEmployeeId } = useEmployeesContext();
+  const { employees, selectedEmployeeId, handleChangeSelectedEmployeeId } =
+    useEmployeesContext();
+  const { query } = useSearchContext();
+
+  const filteredEmployees = employees.filter((employee) =>
+    employee.name.toLowerCase().includes(query)
+  );
+
   const getClassName = (id: string) =>
     cn(
-      'flex items-center gap-x-4 px-4 py-3 border-b-2 w-full hover:bg-black/10 transition-colors',
+      'flex items-center gap-x-4 px-4 py-3 border-b-2 w-full bg-[#f1f3f5] hover:bg-black/5 transition-colors',
       {
         'bg-black/10': id === selectedEmployeeId,
       }
@@ -16,10 +24,13 @@ export default function EmployeeList() {
 
   return (
     <Card>
-      <ul className='h-[400px] overflow-hidden'>
-        {employees.map(({ id, name, imageUrl }) => (
+      <ul className='h-full overflow-hidden'>
+        {filteredEmployees.map(({ id, name, imageUrl }) => (
           <li key={id}>
-            <button className={getClassName(id)}>
+            <button
+              onClick={() => handleChangeSelectedEmployeeId(id)}
+              className={getClassName(id)}
+            >
               <Image
                 className='w-[48px] h-[48px] object-cover rounded-full'
                 src={imageUrl}

@@ -5,9 +5,13 @@ type TEmployeesContextProviderProps = {
   children: ReactNode;
   data: TEmployee[];
 };
+
 type TEmployeesContext = {
   employees: TEmployee[];
+  selectedEmployee: TEmployee | undefined;
   selectedEmployeeId: string | null;
+  totalCount: number;
+  handleChangeSelectedEmployeeId: (a: string) => void;
 };
 
 const EmployeesContext = createContext<TEmployeesContext | null>(null);
@@ -18,14 +22,26 @@ export default function EmployeesContextProvider({
 }: TEmployeesContextProviderProps) {
   const [employees, setEmployees] = useState(data);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
-    '1'
+    null
   );
+
+  const selectedEmployee = employees.find(
+    (employee) => employee.id === selectedEmployeeId
+  );
+  const totalCount = employees.length;
+
+  const handleChangeSelectedEmployeeId = (newEmployeeId: string) => {
+    setSelectedEmployeeId(newEmployeeId);
+  };
 
   return (
     <EmployeesContext.Provider
       value={{
         employees,
+        selectedEmployee,
         selectedEmployeeId,
+        totalCount,
+        handleChangeSelectedEmployeeId,
       }}
     >
       {children}

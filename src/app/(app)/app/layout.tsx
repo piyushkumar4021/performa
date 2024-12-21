@@ -1,4 +1,5 @@
 import EmployeesContextProvider from '@/app/contexts/employees-context-provider';
+import SearchContextProvider from '@/app/contexts/search-context-provider';
 import BackgroundPattern from '@/components/background-pattern';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
@@ -20,9 +21,13 @@ export default async function Layout({ children }: { children: ReactNode }) {
       <BackgroundPattern />
       <div className='flex flex-col min-h-screen max-w-[1100px] p-3 mx-auto'>
         <Header />
-        <EmployeesContextProvider data={data}>
-          {children}
-        </EmployeesContextProvider>
+
+        <SearchContextProvider>
+          <EmployeesContextProvider data={data}>
+            {children}
+          </EmployeesContextProvider>
+        </SearchContextProvider>
+
         <Footer />
       </div>
     </>

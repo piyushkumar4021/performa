@@ -1,3 +1,4 @@
+import EmployeeCount from '@/components/employee-count';
 import EmployeeData from '@/components/employee-data';
 import EmployeeList from '@/components/employee-list';
 import SearchForm from '@/components/search-form';
@@ -10,14 +11,14 @@ export default function Page() {
         <EmployeeCount />
       </div>
 
-      <div className='grid grid-cols-3 grid-rows-[max-content_1fr] gap-4 mt-10'>
-        <div className='col-start-1 row-start-1'>
+      <div className='grid grid-cols-1 md:grid-cols-3 md:grid-rows-[max-content_1fr] gap-4 mt-10'>
+        <div className='md:col-start-1 md:row-start-1'>
           <SearchForm />
         </div>
-        <div className='col-start-1'>
+        <div className='md:col-start-1 h-[400px]'>
           <EmployeeList />
         </div>
-        <div className='row-start-1 col-span-2 row-span-2'>
+        <div className='md:row-start-1 md:col-span-2 md:row-span-2 min-h-[450px] md:h-full'>
           <EmployeeData />
         </div>
       </div>
@@ -32,15 +33,6 @@ const BrandInfo = () => {
       <p className='opacity-75 tracking-wide'>
         Simplify your workforce management
       </p>
-    </section>
-  );
-};
-
-const EmployeeCount = () => {
-  return (
-    <section className='text-center'>
-      <p className='font-bold text-2xl'>0</p>
-      <p>Employees</p>
     </section>
   );
 };
