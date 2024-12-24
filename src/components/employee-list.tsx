@@ -24,7 +24,7 @@ export default function EmployeeList() {
 
   return (
     <Card>
-      <ul className='h-full overflow-hidden'>
+      <ul className='h-full overflow-y-auto'>
         {filteredEmployees.map(({ id, name, imageUrl }) => (
           <li key={id}>
             <button

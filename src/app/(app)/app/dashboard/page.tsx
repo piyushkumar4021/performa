@@ -1,7 +1,9 @@
+import EmployeeAddButton from '@/components/employee-add-button';
 import EmployeeCount from '@/components/employee-count';
 import EmployeeData from '@/components/employee-data';
 import EmployeeList from '@/components/employee-list';
 import SearchForm from '@/components/search-form';
+import { Plus } from 'lucide-react';
 
 export default function Page() {
   return (
@@ -15,8 +17,10 @@ export default function Page() {
         <div className='md:col-start-1 md:row-start-1'>
           <SearchForm />
         </div>
-        <div className='md:col-start-1 h-[400px]'>
+        <div className='md:col-start-1 relative h-[400px]'>
           <EmployeeList />
+
+          <EmployeeAddButton className={'absolute bottom-4 right-4'} />
         </div>
         <div className='md:row-start-1 md:col-span-2 md:row-span-2 min-h-[450px] md:h-full'>
           <EmployeeData />

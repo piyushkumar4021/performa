@@ -11,7 +11,9 @@ type TEmployeesContext = {
   selectedEmployee: TEmployee | undefined;
   selectedEmployeeId: string | null;
   totalCount: number;
-  handleChangeSelectedEmployeeId: (a: string) => void;
+  handleChangeSelectedEmployeeId: (newEmployeeId: string) => void;
+  handleAddEmployee: (employee: Omit<TEmployee, 'id'>) => void;
+  handleRemoveEmployee: (employeeId: string) => void;
 };
 
 const EmployeesContext = createContext<TEmployeesContext | null>(null);
@@ -20,18 +22,29 @@ export default function EmployeesContextProvider({
   children,
   data,
 }: TEmployeesContextProviderProps) {
+  // state
   const [employees, setEmployees] = useState(data);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null
   );
 
+  // derived
   const selectedEmployee = employees.find(
     (employee) => employee.id === selectedEmployeeId
   );
   const totalCount = employees.length;
 
+  // handlers
   const handleChangeSelectedEmployeeId = (newEmployeeId: string) => {
     setSelectedEmployeeId(newEmployeeId);
+  };
+  const handleAddEmployee = (employee: Omit<TEmployee, 'id'>) => {
+    const newEmployee = { id: Date.now().toString(), ...employee };
+    setEmployees([...employees, newEmployee]);
+  };
+  const handleRemoveEmployee = (employeeId: string) => {
+    setEmployees(employees.filter((employee) => employee.id !== employeeId));
+    setSelectedEmployeeId(null);
   };
 
   return (
@@ -42,6 +55,8 @@ export default function EmployeesContextProvider({
         selectedEmployeeId,
         totalCount,
         handleChangeSelectedEmployeeId,
+        handleAddEmployee,
+        handleRemoveEmployee,
       }}
     >
       {children}
