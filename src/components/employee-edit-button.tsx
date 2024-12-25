@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Button } from './ui/button';
 import {
   Dialog,
@@ -19,8 +19,12 @@ export default function EmployeeEditButton({
   className,
   children,
 }: TEmployeeEditButtonProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleIsOpen = () => setIsOpen((prev) => !prev);
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className={className}>{children}</Button>
       </DialogTrigger>
@@ -32,7 +36,7 @@ export default function EmployeeEditButton({
           </DialogDescription>
         </DialogHeader>
 
-        <EmployeeForm />
+        <EmployeeForm toggleDialog={toggleIsOpen} />
       </DialogContent>
     </Dialog>
   );

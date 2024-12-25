@@ -49,7 +49,7 @@ const TopBar = () => {
         {selectedEmployee.name}
       </h2>
 
-      <div className='ml-auto space-x-3'>
+      <div className='flex flex-wrap gap-2 justify-center ml-auto'>
         <EmployeeEditButton>Edit</EmployeeEditButton>
         <EmployeeRemoveButton
           onClick={() => handleRemoveEmployee(selectedEmployee.id)}
@@ -66,14 +66,18 @@ const Info = () => {
   if (!selectedEmployee) return;
 
   return (
-    <div className='flex text-center py-7 justify-around'>
+    <div className='flex flex-wrap text-center py-7 justify-around'>
       <div>
-        <h3 className='font-medium'>OWNER NAME</h3>
-        <p>{selectedEmployee.name}</p>
+        <h3 className='font-medium'>Department</h3>
+        <p>{selectedEmployee.department}</p>
       </div>
       <div>
         <h3 className='font-medium'>AGE</h3>
-        <p>24</p>
+        <p>{selectedEmployee.age}</p>
+      </div>
+      <div>
+        <h3 className='font-medium'>Salary</h3>
+        <p>${selectedEmployee.salary}</p>
       </div>
     </div>
   );

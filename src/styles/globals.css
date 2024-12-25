@@ -15,3 +15,8 @@
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.2);
 }
+
+.required-label::after {
+  content: '*';
+  @apply text-red-700;
+}

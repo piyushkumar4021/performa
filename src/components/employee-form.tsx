@@ -1,63 +1,99 @@
 'use client';
 import { Button } from './ui/button';
+import { FormEvent, InputHTMLAttributes, useId, useState } from 'react';
 import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
+import InputField from './input-field';
 
-export default function EmployeeForm({ toggleDialog }) {
-  const { selectedEmployee, handleAddEmployee } = useEmployeesContext();
+type TEmployeeFormProps = {
+  toggleDialog: () => void;
+};
+
+const emptyEmployee = {
+  age: 0,
+  department: '',
+  imageUrl: '',
+  name: '',
+  salary: 0,
+};
+
+export default function EmployeeForm({ toggleDialog }: TEmployeeFormProps) {
+  const { selectedEmployee, handleAddEmployee, handleEditEmployee } =
+    useEmployeesContext();
+  const [employee, setEmployee] =
+    useState<Omit<TEmployee, 'id'>>(getInitialEmployee);
+
+  function getInitialEmployee() {
+    if (selectedEmployee) {
+      const { id, ...employee } = selectedEmployee;
+      return employee;
+    }
+    return emptyEmployee;
+  }
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!selectedEmployee) {
+      handleAddEmployee(employee);
+    } else {
+      handleEditEmployee({ id: selectedEmployee.id, ...employee });
+    }
+
+    toggleDialog();
+  }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-
-        const data = new FormData(e.currentTarget);
-        const employee: Omit<TEmployee, 'id'> = Object.fromEntries(
-          data.entries()
-        );
-
-        handleAddEmployee(employee);
-        toggleDialog();
-      }}
-      className='text-black flex flex-col'
-    >
-      <div className='mb-3'>
-        <label className='block mb-1' htmlFor='name'>
-          Employee&apos;s Name
-        </label>
-        <input
-          className='block border border-black/50 px-3 py-2 rounded-md w-full'
-          id='name'
-          type='text'
-          name='name'
-          value={selectedEmployee ? selectedEmployee.name : ''}
+    <form onSubmit={handleSubmit} className='flex flex-col'>
+      <div className='space-y-4'>
+        <InputField
+          label={`Employee's Name`}
+          placeholder='John Wick'
+          value={employee.name}
+          onChange={({ target }) =>
+            setEmployee((prev) => ({ ...prev, name: target.value }))
+          }
+          required
         />
-      </div>
-      <div className='mb-3'>
-        <label className='block mb-1' htmlFor='age'>
-          Employee&apos;s Age
-        </label>
-        <input
-          className='block border border-black/50 px-3 py-2 rounded-md w-full'
-          id='age'
+        <InputField
+          label={`Employee's Age`}
           type='number'
-          name='age'
-          value={selectedEmployee ? selectedEmployee.age : ''}
+          placeholder='23'
+          value={employee.age}
+          onChange={({ target }) =>
+            setEmployee((prev) => ({ ...prev, age: +target.value }))
+          }
+          required
         />
-      </div>
-      <div className='mb-3'>
-        <label className='block mb-1' htmlFor='photo'>
-          Photo Url
-        </label>
-        <input
+        <InputField
+          label={`Employee's Image Url`}
           type='url'
-          className='block border border-black/50 px-3 py-2 rounded-md w-full'
-          name='imageUrl'
-          disabled
-          value={selectedEmployee ? selectedEmployee.imageUrl : ''}
+          placeholder='https://example.com/image'
+          value={employee.imageUrl}
+          onChange={({ target }) =>
+            setEmployee((prev) => ({ ...prev, imageUrl: target.value }))
+          }
+        />
+        <InputField
+          label={`Employee's Salary`}
+          type='number'
+          placeholder='50000'
+          value={employee.salary}
+          onChange={({ target }) =>
+            setEmployee((prev) => ({ ...prev, salary: +target.value }))
+          }
+          required
+        />
+        <InputField
+          label={`Employee's Department`}
+          placeholder='Human Resource'
+          value={employee.department}
+          onChange={({ target }) =>
+            setEmployee((prev) => ({ ...prev, department: target.value }))
+          }
+          required
         />
       </div>
 
-      <Button className='ml-auto mt-2'>Save</Button>
+      <Button className='ml-auto mt-5'>Save</Button>
     </form>
   );
 }

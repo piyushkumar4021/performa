@@ -13,6 +13,7 @@ type TEmployeesContext = {
   totalCount: number;
   handleChangeSelectedEmployeeId: (newEmployeeId: string) => void;
   handleAddEmployee: (employee: Omit<TEmployee, 'id'>) => void;
+  handleEditEmployee: (editedEmployee: TEmployee) => void;
   handleRemoveEmployee: (employeeId: string) => void;
 };
 
@@ -42,6 +43,12 @@ export default function EmployeesContextProvider({
     const newEmployee = { id: Date.now().toString(), ...employee };
     setEmployees([...employees, newEmployee]);
   };
+  const handleEditEmployee = (editedEmployee: TEmployee) => {
+    const nextEmployees = employees.map((employee) =>
+      employee.id === editedEmployee.id ? editedEmployee : employee
+    );
+    setEmployees(nextEmployees);
+  };
   const handleRemoveEmployee = (employeeId: string) => {
     setEmployees(employees.filter((employee) => employee.id !== employeeId));
     setSelectedEmployeeId(null);
@@ -56,6 +63,7 @@ export default function EmployeesContextProvider({
         totalCount,
         handleChangeSelectedEmployeeId,
         handleAddEmployee,
+        handleEditEmployee,
         handleRemoveEmployee,
       }}
     >
