@@ -2,8 +2,7 @@
 import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
 import Image from 'next/image';
 import Card from './card';
-import EmployeeEditButton from './employee-edit-button';
-import EmployeeRemoveButton from './employee-remove-button';
+import EmployeeActionButton from './employee-action-button';
 
 export default function EmployeeData() {
   const { selectedEmployee } = useEmployeesContext();
@@ -33,15 +32,15 @@ const EmptyView = () => {
 };
 
 const TopBar = () => {
-  const { selectedEmployee, handleRemoveEmployee } = useEmployeesContext();
+  const { selectedEmployee } = useEmployeesContext();
   if (!selectedEmployee) return;
 
   return (
     <div className='flex items-center gap-x-3 px-5 py-4 border-b border-[rgba(0,0,0,0.08)] bg-[#f1f3f5]'>
       <Image
         src={selectedEmployee.imageUrl}
-        width={75}
-        height={75}
+        width={150}
+        height={150}
         alt={`${selectedEmployee.name}'s Photo`}
         className='w-[75px] h-[75px] object-cover rounded-full'
       />
@@ -50,12 +49,8 @@ const TopBar = () => {
       </h2>
 
       <div className='flex flex-wrap gap-2 justify-center ml-auto'>
-        <EmployeeEditButton>Edit</EmployeeEditButton>
-        <EmployeeRemoveButton
-          onClick={() => handleRemoveEmployee(selectedEmployee.id)}
-        >
-          Remove
-        </EmployeeRemoveButton>
+        <EmployeeActionButton actionType='edit'>Edit</EmployeeActionButton>
+        <EmployeeActionButton actionType='remove'>Remove</EmployeeActionButton>
       </div>
     </div>
   );

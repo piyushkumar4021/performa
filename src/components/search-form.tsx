@@ -13,6 +13,7 @@ export default function SearchForm() {
         placeholder='Search employees'
         value={query}
         onChange={({ target }) => handleChangeQuery(target.value.toLowerCase())}
+        disabled
       />
     </form>
   );

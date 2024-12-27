@@ -19,7 +19,7 @@ const routes = [
 export default function Header() {
   return (
     <header className='flex justify-between items-center pb-3 border-b-2 border-b-white/20'>
-      <Logo />
+      <Logo priority />
 
       <NavLinks />
     </header>

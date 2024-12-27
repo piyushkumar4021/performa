@@ -1,4 +1,4 @@
-import EmployeeAddButton from '@/components/employee-add-button';
+import EmployeeActionButton from '@/components/employee-action-button';
 import EmployeeCount from '@/components/employee-count';
 import EmployeeData from '@/components/employee-data';
 import EmployeeList from '@/components/employee-list';
@@ -9,7 +9,7 @@ export default function Page() {
   return (
     <main>
       <div className='flex justify-between items-center mt-5'>
-        <BrandInfo />
+        <Brand />
         <EmployeeCount />
       </div>
 
@@ -20,7 +20,12 @@ export default function Page() {
         <div className='md:col-start-1 relative h-[400px]'>
           <EmployeeList />
 
-          <EmployeeAddButton className={'absolute bottom-4 right-4'} />
+          <EmployeeActionButton
+            actionType='add'
+            className={'absolute bottom-4 right-4'}
+          >
+            <Plus />
+          </EmployeeActionButton>
         </div>
         <div className='md:row-start-1 md:col-span-2 md:row-span-2 min-h-[450px] md:h-full'>
           <EmployeeData />
@@ -30,7 +35,7 @@ export default function Page() {
   );
 }
 
-const BrandInfo = () => {
+const Brand = () => {
   return (
     <section>
       <h1 className='font-bold tracking-wide text-xl'>Performa</h1>

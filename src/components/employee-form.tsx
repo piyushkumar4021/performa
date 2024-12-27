@@ -1,99 +1,97 @@
 'use client';
 import { Button } from './ui/button';
-import { FormEvent, InputHTMLAttributes, useId, useState } from 'react';
 import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
 import InputField from './input-field';
+import { addEmployee, editEmployee } from '@/actions/actions';
+import { toast } from 'sonner';
+import { useFormStatus } from 'react-dom';
+import Spinner from './spinner';
 
 type TEmployeeFormProps = {
   toggleDialog: () => void;
+  actionType: 'add' | 'edit' | 'remove';
 };
 
-const emptyEmployee = {
-  age: 0,
-  department: '',
-  imageUrl: '',
-  name: '',
-  salary: 0,
-};
+export default function EmployeeForm({
+  toggleDialog,
+  actionType,
+}: TEmployeeFormProps) {
+  const { selectedEmployee } = useEmployeesContext();
 
-export default function EmployeeForm({ toggleDialog }: TEmployeeFormProps) {
-  const { selectedEmployee, handleAddEmployee, handleEditEmployee } =
-    useEmployeesContext();
-  const [employee, setEmployee] =
-    useState<Omit<TEmployee, 'id'>>(getInitialEmployee);
+  const handleAction = async (formData: FormData) => {
+    let response;
 
-  function getInitialEmployee() {
-    if (selectedEmployee) {
-      const { id, ...employee } = selectedEmployee;
-      return employee;
+    if (actionType === 'add') {
+      response = await addEmployee(formData);
+    } else if (actionType === 'edit') {
+      response = await editEmployee(selectedEmployee?.id, formData);
     }
-    return emptyEmployee;
-  }
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
 
-    if (!selectedEmployee) {
-      handleAddEmployee(employee);
-    } else {
-      handleEditEmployee({ id: selectedEmployee.id, ...employee });
+    if (response) {
+      toast.error(response.message);
+      return;
     }
 
     toggleDialog();
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col'>
+    <form action={handleAction} className='flex flex-col'>
       <div className='space-y-4'>
         <InputField
+          name='name'
           label={`Employee's Name`}
           placeholder='John Wick'
-          value={employee.name}
-          onChange={({ target }) =>
-            setEmployee((prev) => ({ ...prev, name: target.value }))
-          }
+          defaultValue={actionType === 'edit' ? selectedEmployee?.name : ''}
           required
         />
         <InputField
+          name='age'
           label={`Employee's Age`}
           type='number'
           placeholder='23'
-          value={employee.age}
-          onChange={({ target }) =>
-            setEmployee((prev) => ({ ...prev, age: +target.value }))
-          }
+          defaultValue={actionType === 'edit' ? selectedEmployee?.age : ''}
           required
         />
         <InputField
+          name='imageUrl'
           label={`Employee's Image Url`}
           type='url'
           placeholder='https://example.com/image'
-          value={employee.imageUrl}
-          onChange={({ target }) =>
-            setEmployee((prev) => ({ ...prev, imageUrl: target.value }))
-          }
+          defaultValue={actionType === 'edit' ? selectedEmployee?.imageUrl : ''}
+          disabled
         />
         <InputField
+          name='salary'
           label={`Employee's Salary`}
           type='number'
           placeholder='50000'
-          value={employee.salary}
-          onChange={({ target }) =>
-            setEmployee((prev) => ({ ...prev, salary: +target.value }))
-          }
+          defaultValue={actionType === 'edit' ? selectedEmployee?.salary : ''}
           required
         />
         <InputField
+          name='department'
           label={`Employee's Department`}
           placeholder='Human Resource'
-          value={employee.department}
-          onChange={({ target }) =>
-            setEmployee((prev) => ({ ...prev, department: target.value }))
+          defaultValue={
+            actionType === 'edit' ? selectedEmployee?.department : ''
           }
           required
         />
       </div>
 
-      <Button className='ml-auto mt-5'>Save</Button>
+      <SubmitButton actionType={actionType} />
     </form>
   );
 }
+
+const SubmitButton = ({ actionType }) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button className='flex items-center ml-auto mt-5' disabled={pending}>
+      {pending && <Spinner />}
+      {actionType === 'add' ? 'Add Employee' : 'Edit Employee'}
+    </Button>
+  );
+};

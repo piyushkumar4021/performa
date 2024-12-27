@@ -5,6 +5,7 @@ import Footer from '@/components/footer';
 import Header from '@/components/header';
 import { prisma } from '@/lib/client';
 import { ReactNode } from 'react';
+import { Toaster } from 'sonner';
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const employees = await prisma.employees.findMany();
@@ -16,10 +17,12 @@ export default async function Layout({ children }: { children: ReactNode }) {
         <Header />
 
         <SearchContextProvider>
-          <EmployeesContextProvider data={employees}>
+          <EmployeesContextProvider employees={employees}>
             {children}
           </EmployeesContextProvider>
         </SearchContextProvider>
+
+        <Toaster />
 
         <Footer />
       </div>
