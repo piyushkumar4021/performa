@@ -11,9 +11,7 @@ import {
 } from './ui/dialog';
 import { DialogHeader } from './ui/dialog';
 import EmployeeForm from './employee-form';
-import { removeEmployee } from '@/actions/actions';
 import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
-import Spinner from './spinner';
 
 type TEmployeeActionButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   actionType: 'add' | 'edit' | 'remove';
@@ -29,8 +27,7 @@ export default function EmployeeActionButton({
 }: TEmployeeActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleIsOpen = () => setIsOpen((prev) => !prev);
-  const { selectedEmployeeId } = useEmployeesContext();
-  const [pending, setPending] = useState(false);
+  const { selectedEmployeeId, handleRemoveEmployee } = useEmployeesContext();
 
   if (actionType === 'add' || actionType === 'edit') {
     return (
@@ -56,16 +53,10 @@ export default function EmployeeActionButton({
 
   return (
     <Button
-      onClick={async () => {
-        setPending(true);
-        await removeEmployee(selectedEmployeeId);
-        setPending(false);
-      }}
+      onClick={() => handleRemoveEmployee(selectedEmployeeId as string)}
       variant='destructive'
-      disabled={pending}
       {...props}
     >
-      {pending && <Spinner />}
       {children}
     </Button>
   );

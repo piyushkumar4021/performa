@@ -1,22 +1,15 @@
 'use server';
 
 import { prisma } from '@/lib/client';
-import { UNKOWN_IMAGE_URL } from '@/lib/constants';
 import { sleep } from '@/lib/utils';
 import { revalidatePath } from 'next/cache';
 
-export const addEmployee = async (formData) => {
+export const addEmployee = async (employee: Omit<TEmployee, 'id'>) => {
   await sleep(2000);
 
   try {
     await prisma.employees.create({
-      data: {
-        name: formData.get('name'),
-        age: +formData.get('age'),
-        salary: +formData.get('salary'),
-        imageUrl: formData.get('imageUrl') || UNKOWN_IMAGE_URL,
-        department: formData.get('department'),
-      },
+      data: employee,
     });
   } catch (error) {
     return {
@@ -28,7 +21,10 @@ export const addEmployee = async (formData) => {
   return;
 };
 
-export const editEmployee = async (employeeId, formData) => {
+export const editEmployee = async (
+  employeeId: string,
+  employee: Omit<TEmployee, 'id'>
+) => {
   await sleep(2000);
 
   try {
@@ -36,13 +32,7 @@ export const editEmployee = async (employeeId, formData) => {
       where: {
         id: employeeId,
       },
-      data: {
-        name: formData.get('name'),
-        age: +formData.get('age'),
-        salary: +formData.get('salary'),
-        imageUrl: formData.get('imageUrl') || UNKOWN_IMAGE_URL,
-        department: formData.get('department'),
-      },
+      data: employee,
     });
   } catch (error) {
     return {
@@ -54,7 +44,7 @@ export const editEmployee = async (employeeId, formData) => {
   return;
 };
 
-export const removeEmployee = async (employeeId) => {
+export const removeEmployee = async (employeeId: string) => {
   await sleep(2000);
 
   try {

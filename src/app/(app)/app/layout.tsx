@@ -17,7 +17,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
         <Header />
 
         <SearchContextProvider>
-          <EmployeesContextProvider employees={employees}>
+          <EmployeesContextProvider data={employees}>
             {children}
           </EmployeesContextProvider>
         </SearchContextProvider>

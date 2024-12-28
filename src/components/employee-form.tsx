@@ -2,10 +2,9 @@
 import { Button } from './ui/button';
 import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
 import InputField from './input-field';
-import { addEmployee, editEmployee } from '@/actions/actions';
-import { toast } from 'sonner';
-import { useFormStatus } from 'react-dom';
+import { flushSync, useFormStatus } from 'react-dom';
 import Spinner from './spinner';
+import { UNKOWN_IMAGE_URL } from '@/lib/constants';
 
 type TEmployeeFormProps = {
   toggleDialog: () => void;
@@ -16,23 +15,25 @@ export default function EmployeeForm({
   toggleDialog,
   actionType,
 }: TEmployeeFormProps) {
-  const { selectedEmployee } = useEmployeesContext();
+  const { selectedEmployee, handleAddEmployee, handleEditEmployee } =
+    useEmployeesContext();
 
   const handleAction = async (formData: FormData) => {
-    let response;
+    flushSync(toggleDialog);
+
+    const employee: Omit<TEmployee, 'id'> = {
+      name: formData.get('name') as string,
+      age: +(formData.get('age') as string),
+      imageUrl: (formData.get('imageUrl') as string) || UNKOWN_IMAGE_URL,
+      department: formData.get('department') as string,
+      salary: +(formData.get('salary') as string),
+    };
 
     if (actionType === 'add') {
-      response = await addEmployee(formData);
+      handleAddEmployee(employee);
     } else if (actionType === 'edit') {
-      response = await editEmployee(selectedEmployee?.id, formData);
+      handleEditEmployee(selectedEmployee!.id, employee);
     }
-
-    if (response) {
-      toast.error(response.message);
-      return;
-    }
-
-    toggleDialog();
   };
 
   return (
@@ -85,7 +86,11 @@ export default function EmployeeForm({
   );
 }
 
-const SubmitButton = ({ actionType }) => {
+const SubmitButton = ({
+  actionType,
+}: {
+  actionType: 'add' | 'edit' | 'remove';
+}) => {
   const { pending } = useFormStatus();
 
   return (
