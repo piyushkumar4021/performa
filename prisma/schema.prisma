@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Employees {
+model Employee {
   id         String   @unique @default(uuid())
   name       String
   age        Int

@@ -36,19 +36,9 @@ async function main() {
         'https://media.istockphoto.com/id/891418990/photo/confident-businessman-posing-in-the-office.jpg?s=612x612&w=0&k=20&c=a3PcRJAN9QTIfOUJj566B_I4xx2LANZFnX90_-Oe7CI=',
       department: 'Human Resources',
     },
-    {
-      name: 'Ethan Hunt',
-      age: 31,
-      salary: 58000,
-      imageUrl:
-        'https://media.istockphoto.com/id/1354842602/photo/portrait-of-a-young-businesswoman-working-on-a-laptop-in-an-office.jpg?s=612x612&w=0&k=20&c=kfP1g2712RiaxsDriIxFo363ARlaL2D591s-22CnIo8=',
-      department: 'Operations',
-    },
   ].map(async (employee, idx) => {
     console.log(`seeding ${idx + 1}`);
-
-    const { id } = await prisma.employees.create({ data: employee });
-
+    const { id } = await prisma.employee.create({ data: employee });
     console.log(`created employee with id : ${id}`);
   });
 

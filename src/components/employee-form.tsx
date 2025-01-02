@@ -5,6 +5,7 @@ import InputField from './input-field';
 import { flushSync, useFormStatus } from 'react-dom';
 import Spinner from './spinner';
 import { UNKOWN_IMAGE_URL } from '@/lib/constants';
+import { EmployeeEssentials } from '@/lib/types';
 
 type TEmployeeFormProps = {
   toggleDialog: () => void;
@@ -21,7 +22,7 @@ export default function EmployeeForm({
   const handleAction = async (formData: FormData) => {
     flushSync(toggleDialog);
 
-    const employee: Omit<TEmployee, 'id'> = {
+    const employee: EmployeeEssentials = {
       name: formData.get('name') as string,
       age: +(formData.get('age') as string),
       imageUrl: (formData.get('imageUrl') as string) || UNKOWN_IMAGE_URL,

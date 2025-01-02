@@ -8,7 +8,7 @@ import { ReactNode } from 'react';
 import { Toaster } from 'sonner';
 
 export default async function Layout({ children }: { children: ReactNode }) {
-  const employees = await prisma.employees.findMany();
+  const employees = await prisma.employee.findMany();
 
   return (
     <>
@@ -23,7 +23,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
         </SearchContextProvider>
 
         <Toaster />
-
         <Footer />
       </div>
     </>

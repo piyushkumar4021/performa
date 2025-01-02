@@ -1,14 +1,16 @@
 'use server';
 
 import { prisma } from '@/lib/client';
+import { EmployeeEssentials } from '@/lib/types';
 import { sleep } from '@/lib/utils';
+import { Employee } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
-export const addEmployee = async (employee: Omit<TEmployee, 'id'>) => {
+export const addEmployee = async (employee: EmployeeEssentials) => {
   await sleep(2000);
 
   try {
-    await prisma.employees.create({
+    await prisma.employee.create({
       data: employee,
     });
   } catch (error) {
@@ -22,13 +24,13 @@ export const addEmployee = async (employee: Omit<TEmployee, 'id'>) => {
 };
 
 export const editEmployee = async (
-  employeeId: string,
-  employee: Omit<TEmployee, 'id'>
+  employeeId: Employee['id'],
+  employee: EmployeeEssentials
 ) => {
   await sleep(2000);
 
   try {
-    await prisma.employees.update({
+    await prisma.employee.update({
       where: {
         id: employeeId,
       },
@@ -44,11 +46,11 @@ export const editEmployee = async (
   return;
 };
 
-export const removeEmployee = async (employeeId: string) => {
+export const removeEmployee = async (employeeId: Employee['id']) => {
   await sleep(2000);
 
   try {
-    await prisma.employees.delete({
+    await prisma.employee.delete({
       where: {
         id: employeeId,
       },

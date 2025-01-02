@@ -1,8 +1,6 @@
-type TEmployee = {
-  id: string;
-  name: string;
-  imageUrl: string;
-  age: number;
-  salary: number;
-  department: string;
-};
+import { Employee } from '@prisma/client';
+
+export type EmployeeEssentials = Omit<
+  Employee,
+  'id' | 'updatedAt' | 'createdAt'
+>;

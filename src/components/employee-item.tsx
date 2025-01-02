@@ -1,8 +1,9 @@
 import { useEmployeesContext } from '@/app/contexts/employees-context-provider';
 import { cn } from '@/lib/utils';
+import { Employee } from '@prisma/client';
 import Image from 'next/image';
 
-export default function EmployeeItem({ employee }: { employee: TEmployee }) {
+export default function EmployeeItem({ employee }: { employee: Employee }) {
   const { selectedEmployeeId, handleChangeSelectedEmployeeId } =
     useEmployeesContext();
 

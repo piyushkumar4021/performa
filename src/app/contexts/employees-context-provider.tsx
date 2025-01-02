@@ -1,5 +1,7 @@
 'use client';
 import { addEmployee, editEmployee, removeEmployee } from '@/actions/actions';
+import { EmployeeEssentials } from '@/lib/types';
+import { Employee } from '@prisma/client';
 import {
   createContext,
   ReactNode,
@@ -12,21 +14,21 @@ import { toast } from 'sonner';
 
 type TEmployeesContextProviderProps = {
   children: ReactNode;
-  data: TEmployee[];
+  data: Employee[];
 };
 
 type TEmployeesContext = {
-  employees: TEmployee[];
-  selectedEmployee: TEmployee | undefined;
-  selectedEmployeeId: string | null;
+  employees: Employee[];
+  selectedEmployee: Employee | undefined;
+  selectedEmployeeId: Employee['id'] | null;
   totalCount: number;
-  handleChangeSelectedEmployeeId: (newEmployeeId: string) => void;
-  handleAddEmployee: (employee: Omit<TEmployee, 'id'>) => void;
+  handleChangeSelectedEmployeeId: (newEmployeeId: Employee['id']) => void;
+  handleAddEmployee: (employee: EmployeeEssentials) => void;
   handleEditEmployee: (
-    employeeId: string,
-    employee: Omit<TEmployee, 'id'>
+    employeeId: Employee['id'],
+    employee: EmployeeEssentials
   ) => void;
-  handleRemoveEmployee: (employeeId: string) => void;
+  handleRemoveEmployee: (employeeId: Employee['id']) => void;
 };
 
 const EmployeesContext = createContext<TEmployeesContext | null>(null);
@@ -41,7 +43,15 @@ export default function EmployeesContextProvider({
     (state, { action, payload }) => {
       switch (action) {
         case 'add': {
-          return [...state, { id: Date.now().toString(), ...payload.data }];
+          return [
+            ...state,
+            {
+              ...payload.data,
+              id: Date.now().toString(),
+              createdAt: new Date(),
+              modifiedAt: new Date(),
+            },
+          ];
         }
         case 'edit': {
           return state.map((employee) => {
@@ -56,9 +66,9 @@ export default function EmployeesContextProvider({
       }
     }
   );
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
-    null
-  );
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<
+    Employee['id'] | null
+  >(null);
 
   // derived
   const selectedEmployee = optimisticEmployees.find(
@@ -67,18 +77,18 @@ export default function EmployeesContextProvider({
   const totalCount = optimisticEmployees.length;
 
   // handlers
-  const handleChangeSelectedEmployeeId = (newEmployeeId: string) => {
+  const handleChangeSelectedEmployeeId = (newEmployeeId: Employee['id']) => {
     setSelectedEmployeeId(newEmployeeId);
   };
-  const handleAddEmployee = async (employee: Omit<TEmployee, 'id'>) => {
+  const handleAddEmployee = async (employee: EmployeeEssentials) => {
     setOptimisticEmployees({ action: 'add', payload: { data: employee } });
 
     const error = await addEmployee(employee);
     if (error) toast.error(error.message);
   };
   const handleEditEmployee = async (
-    employeeId: string,
-    employee: Omit<TEmployee, 'id'>
+    employeeId: Employee['id'],
+    employee: EmployeeEssentials
   ) => {
     setOptimisticEmployees({
       action: 'edit',
@@ -91,7 +101,7 @@ export default function EmployeesContextProvider({
     const error = await editEmployee(employeeId, employee);
     if (error) toast.error(error.message);
   };
-  const handleRemoveEmployee = async (employeeId: string) => {
+  const handleRemoveEmployee = async (employeeId: Employee['id']) => {
     startTransition(() =>
       setOptimisticEmployees({ action: 'remove', payload: { id: employeeId } })
     );
